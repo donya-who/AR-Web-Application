@@ -53,7 +53,7 @@ html, body {
       scale="0.7 0.7 0.7"
       position="0 -2.2 0"
       rotation="0 180 0"
-      animation-mixer="clip: anim; loop: repeat"
+      animation-mixer="clip: Animation; loop: repeat"
     ></a-gltf-model>
 
     <a-light type="point" intensity="1.2" color="#8b0000" position="0 1 1"></a-light>
@@ -73,11 +73,11 @@ AFRAME.registerComponent("spectral-trigger", {
       if (t - this.lastActivation < this.delay) return;
       this.lastActivation = t;
 
-      const anim = model.components["animation-mixer"];
-      if (!anim) return;
+      const Animation = model.components["animation-mixer"];
+      if (!Animation) return;
 
-      anim.stopAllAction();
-      anim.playAction("anim");
+      Animation.stopAllAction();
+      Animation.playAction("Animation");
     });
   }
 });
