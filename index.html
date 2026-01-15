@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WebAR</title>
+
+  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.0/dist/aframe-extras.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+  <style>
+   body {
+     margin: 0;
+     overflow: hidden;
+     background: #00141f;
+     font-family: system-ui, sans-serif;
+   }
+  
+    #title {
+      position: fixed;
+      top: 16px;
+      width: 100%;
+      text-align: center;
+      font-size: 1.2rem;
+      color: #6fd3ff;
+      letter-spacing: 0.1em;
+      pointer-events: none;
+      text-shadow: 0 0 8px rgba(100,200,255,0.6);
+    }
+    
+    #tint {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,60,90,0.12);
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="title">WebAR: Sea Monster</div>
+  <div id="tint"></div>
+  <a-scene
+    mindar-image="imageTargetSrc: targets-3.mind;"
+    renderer="antialias: false; precision: mediump"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false"
+  >
+
+    <a-assets>
+      <a-asset-item id="model" src="angel.glb"></a-asset-item>
+    </a-assets>
+
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+    <a-entity mindar-image-target="targetIndex: 0" scan-cooldown>
+    <a-gltf-model
+      src="#model"
+      scale="0.005 0.005 0.005"
+      position="0 0 0"
+      animation-mixer="clip: Animation; loop: repeat; clampWhenFinished: true"
+    ></a-gltf-model>
+    </a-entity>
+    
+  <script>
+  AFRAME.registerComponent("scan-cooldown", {
+    init() {
+      this.lastTime = 0;
+      this.cooldown = 2000;
+  
+      const modelEl = this.el.querySelector("#angel");
+  
+      modelEl.addEventListener("model-loaded", (e) => {
+        const gltf = e.detail.model;
+        const animations = e.detail.model.animations || [];
+      });
+  
+      this.el.addEventListener("targetFound", () => {
+        const now = Date.now();
+        if (now - this.lastTime < this.cooldown) return;
+        this.lastTime = now;
+  
+        const mixer = modelEl.components["animation-mixer"];
+        if (!mixer) return;
+  
+        mixer.stopAllAction();
+        mixer.playAction();
+      });
+    }
+  });
+  </script>
+  </a-scene>
+</body>
+</html>
